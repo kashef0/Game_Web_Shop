@@ -35,6 +35,7 @@ export default function useGet<T>(url: string, updateStatus: boolean, id?: strin
                 response = await fetch(urlWithId, {
                     method: "GET",   // eller annan metod om behövs
                     headers: {"Authorization": `Bearer ${authToken}`},  // Lägg till headers här
+                    
                 });
             }
             
