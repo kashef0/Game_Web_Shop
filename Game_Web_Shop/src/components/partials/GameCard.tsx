@@ -1,6 +1,8 @@
 import { Games } from "@/types/Game";
-import { Button, Card, Image } from "@chakra-ui/react";
+import { Button, Card, HStack, Image } from "@chakra-ui/react";
 import PlatformIconList from "./PlatformIconList";
+import CriticScore from "./CriticScore";
+import croppedImageUrl from "@/utils/CroppedImageUrl";
 
 interface Props {
   game: Games;
@@ -9,10 +11,15 @@ interface Props {
 const GameCard = ({ game }: Props) => {
   return (
     <Card.Root maxW="sm" borderRadius={10} overflow="hidden">
-      <Image src={game.background_image} height="200px" all={game.name} />
+      <Image src={croppedImageUrl(game.background_image)} height="200px" all={game.name} />
       <Card.Body gap={2}>
-        <Card.Title fontSize='1.6rem'>{game.name}</Card.Title>
-        <PlatformIconList platforms={game.parent_platforms.map(p => p.platform)} />
+        <Card.Title fontSize="1.6rem">{game.name}</Card.Title>
+        <HStack justifyContent='space-between'>
+          <PlatformIconList
+            platforms={game.parent_platforms.map((p) => p.platform)}
+          />
+          <CriticScore score={game.metacritic} />
+        </HStack>
       </Card.Body>
       <Card.Footer gap="2">
         <Button variant="solid">Buy now</Button>

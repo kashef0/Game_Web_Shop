@@ -1,13 +1,13 @@
 import useGet from "@/hooks/useGet";
 import { FetchGameRes, Games } from "@/types/Game";
-import { SimpleGrid, Spinner, VStack, Text } from "@chakra-ui/react";
+import { SimpleGrid } from "@chakra-ui/react";
 
 import { useEffect, useState } from "react";
 import GameCard from "./GameCard";
+import GameCardSkeleton from "./GameCardSkeleton";
 
 const GameGrid = () => {
   const [game, setGame] = useState<Games[]>([]);
-
   const {
     data: dataGames,
     error: gameError,
@@ -23,17 +23,13 @@ const GameGrid = () => {
   }, [dataGames]);
 
   const renderError = gameError && !dataGames;
-
+  const Skeletons = [1, 2, 3, 4, 5, 6];
   return (
     <>
-      {gameLoading && (
-        <VStack colorPalette="teal">
-          <Spinner color="colorPalette.600" />
-          <Text color="colorPalette.600">Loading...</Text>
-        </VStack>
-      )}
       {renderError && <p>Error: {gameError}</p>}
-      <SimpleGrid columns={{sm: 1, md:2, lg: 3, xl: 5}} p='10px' gap={10}>
+      <SimpleGrid columns={{ sm: 1, md: 2, lg: 3, xl: 5 }} p="10px" gap={10}>
+      {gameLoading &&
+        Skeletons.map((skeleton) => <GameCardSkeleton key={skeleton} />)}
         {game.map((g) => (
           <GameCard key={g.id} game={g} />
         ))}
