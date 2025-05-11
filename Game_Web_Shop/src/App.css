@@ -1,0 +1,18 @@
+.searchForm {
+    width: 75%;
+}
+
+.cart-hover-effect {
+    transition: transform 0.2s ease-in-out, text-shadow 0.2s ease-in-out;
+  }
+  
+  .cart-hover-effect:hover {
+    transform: rotate(35deg);
+    color: #e53e3e; 
+    text-shadow: 6px 2px 10px rgba(229, 62, 62, 0.6);
+  }
+  
+
+  .loginLink:hover {
+    color: #e53e3e;
+  }
