@@ -15,7 +15,6 @@ import useGet from "@/hooks/useGet";
 import { useState } from "react";
 import GameVideo from "../GameVideo";
 
-// Add these interfaces below the imports
 interface BackendGameData {
   _id: string;
   rawgId: number;
@@ -43,7 +42,6 @@ const GameCard: React.FC<Props> = ({ game }) => {
     `${API_URL}/games/${game.rawgId}/movies?key=${API_KEY}`,
     isHovered // Om musen är över kortet, hämta trailern
   );
-  console.log("showPreview", gamePreview);
 
   const handleSubmit = (id: number) => {
     navigate(`/game/details/${id}`); // Navigera till speldetaljsidan
@@ -74,6 +72,7 @@ const GameCard: React.FC<Props> = ({ game }) => {
     );
     alert(`${rawgGame.name} added to cart`);
   };
+  
 
   return (
     <Card.Root
