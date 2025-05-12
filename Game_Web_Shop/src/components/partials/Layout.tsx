@@ -1,14 +1,24 @@
-import { Outlet } from "react-router-dom"
-
+import { GridItem } from "@chakra-ui/react";
+import { Outlet } from "react-router-dom";
+import NavBar from "./NavBar";
+import Footer from "./Footer";
 
 const Layout = () => {
   return (
     <>
-        <main>
-            <Outlet />
-        </main>
-    </>
-  )
-}
+      <GridItem area="nav">
+        <NavBar />
+      </GridItem>
 
-export default Layout
+      <GridItem area="main" minH='70vh'>
+        <Outlet />
+      </GridItem>
+
+      <GridItem area="footer">
+        <Footer />
+      </GridItem>
+    </>
+  );
+};
+
+export default Layout;

@@ -13,9 +13,12 @@ import { SiNintendo } from "react-icons/si";
 import { BsGlobe } from "react-icons/bs";
 import { IconType } from "react-icons/lib";
 interface Props {
+  // en lista av plattformar
   platforms: Platform[];
 }
 const PlatformIconList = ({ platforms }: Props) => {
+
+  // Mappning mellan plattforms slug och respektive ikonkomponent
   const iconMap: { [key: string]: IconType } = {
     pc: FaWindows,
     playstation: FaPlaystation,
@@ -29,9 +32,17 @@ const PlatformIconList = ({ platforms }: Props) => {
   };
   return (
     <HStack marginY={1}>
-      {platforms.map((p) => (
-        <Icon as={iconMap[p.slug]} color='gray.500'/>
-      ))}
+      {platforms.map((p) => {
+        const IconComponent = iconMap[p.slug];
+        return IconComponent ? (
+          <Icon 
+            key={p.id} 
+            as={IconComponent} 
+            color='gray.500'
+            boxSize={4} 
+          />
+        ) : null;
+      })}
     </HStack>
   );
 };
