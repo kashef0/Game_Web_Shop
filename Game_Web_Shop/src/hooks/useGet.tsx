@@ -24,11 +24,13 @@ export default function useGet<T>(url: string, updateStatus: boolean, id?: strin
         setLoading(true); 
         try {
             let response;
+            
             // bygger url beroende på om ett id är angivet
             let urlWithId = url;
             if (id) {
                 urlWithId = `${url}/${id}`;  // lägg till id till url om det finns
             }
+            
             if (!authToken) {
                 response = await fetch(urlWithId);  // skicka get förfrågan
             } else {
@@ -38,7 +40,7 @@ export default function useGet<T>(url: string, updateStatus: boolean, id?: strin
                     
                 });
             }
-            
+           
 
             if (!response.ok) {
                 throw Error("Fel vid hämtning av data" + response.status); 
@@ -48,6 +50,7 @@ export default function useGet<T>(url: string, updateStatus: boolean, id?: strin
             const fetchedData = await response.json();  // spara data
             
             setData(fetchedData);
+            setError(null);
         } catch (error) {
             console.error("Fel:", error);
             setError("Kunde inte hämta data.");

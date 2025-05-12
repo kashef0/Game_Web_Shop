@@ -1,55 +1,51 @@
+// hooks/usePut.tsx
 import { useState } from "react";
 
-// hook för att hantera borttagning förfrågningar
-export default function usePut<T extends { _id: string }>(url: string) : {
-    data: T | null,                
-    error: string | null,    
-    loading: boolean,         
-    updateData: ( updatedData: T, updateId: string) => Promise<void> 
-} {
+export default function usePut<T>(url: string) {
+  const [data, setData] = useState<T | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
-    // State för data, error och loading
-    const [data, setData] = useState<T | null>(null);      
-    const [error, setError] = useState<string | null>(null);  
-    const [loading, setLoading] = useState<boolean>(false);
+  const updateData = async (updatedData: FormData | object) => {
+    setLoading(true);
+    setError(null);
 
-    // funktion för att radera item baserat på id
-    const updateData = async (updatedData: T, updateId: string) => {
-        setLoading(true); 
-        
-        // kontrollera om ett id skickas med
-        const itemToUpdate = updateId;
-        if (!itemToUpdate) throw new Error("Ingen ID angiven för borttagning");
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) throw new Error("No authentication token found");
 
-        try {
-            // hämtar token från localStorage 
-            const token = localStorage.getItem("token");
+      const headers: HeadersInit = {
+        'Authorization': `Bearer ${token}`
+      };
 
-            // skickar ta bort förfrågan till servern
-            const responseData = await fetch(`${url}/${updateId}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',  
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify(updatedData),  
-            });
+      
+      if (!(updatedData instanceof FormData)) {
+        headers['Content-Type'] = 'application/json';
+      }
 
-            if (!responseData.ok) {
-                throw new Error('Misslyckades att ta bort item..');
-            }
-            const data = await responseData.json();
-            setData(data);
-            setError(null);  // Rensar felmeddelandet om borttagningen lyckas
+      const response = await fetch(url, {
+        method: 'PUT',
+        headers,
+        body: updatedData instanceof FormData 
+          ? updatedData 
+          : JSON.stringify(updatedData)
+      });
 
-        } catch (error) {
-            console.error(error); 
-            setError('Misslyckades att ta bort item..');  
-        } finally {
-            setLoading(false); 
-        }
-    };
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Update failed');
+      }
 
-    // returnerar data, error, loading och updateData funktionen
-    return {data, error, loading, updateData};
+      const responseData = await response.json();
+      setData(responseData); 
+      return responseData;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Update failed');
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { data, error, loading, updateData };
 }

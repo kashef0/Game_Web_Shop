@@ -1,3 +1,4 @@
+import { UserOrder } from "./auth";
 
 export interface OrderItemRequest {
   game: string;          // id of the game
@@ -42,4 +43,14 @@ export interface OrderItem {
   quantity: number;
 }
 
-
+  export interface Order {
+    _id: string;
+    user: UserOrder | string;
+    items: OrderItem[];
+    totalPrice: number;
+    paymentMethod: string;
+    isPaid: boolean;
+    isDelivered: boolean;
+    rentalReturnDate?: string;
+    createdAt: string;
+  }

@@ -32,3 +32,12 @@ export interface AuthLogin {
     role: 'user';
     profilePic: string;
 }
+
+
+export interface UserOrder {
+    _id: string;
+    name: string;
+    email: string;
+    role: 'user';
+    profilePic?: string;
+  }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 // hook för att hantera post förfrågningar
 export default function usePost<T>(url: string) : {
@@ -12,11 +12,6 @@ export default function usePost<T>(url: string) : {
     const [data, setData] = useState<T>([] as T);    
     const [error, setError] = useState<string | null>(null);  
     const [loading, setLoading] = useState<boolean>(false);
-
-    //trigga postData när url ändras
-    useEffect(() => {
-        postData(data);  // Skickar post förfrågan med data
-    }, [url]);
 
     // skicka post förfrågan
     const postData = async (req: T) => {
@@ -34,8 +29,9 @@ export default function usePost<T>(url: string) : {
             });
 
             if (!response.ok) {
-                const errorText = await response.text();
-                throw new Error(errorText); 
+                const errorText = await response.json();
+                
+                throw new Error(errorText.message); 
             }
 
             const responseData = await response.json();  // Spara data
@@ -43,7 +39,7 @@ export default function usePost<T>(url: string) : {
             return responseData;
         } catch (err: any) {
             setError(err.message || "Kunde inte hämta data.");
-            throw err;
+            return null;
         } finally {
             setLoading(false);  
         }
