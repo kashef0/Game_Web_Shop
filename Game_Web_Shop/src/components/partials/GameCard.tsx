@@ -1,4 +1,3 @@
-
 import { Button, Card, HStack, Text, Image, Flex, Box } from "@chakra-ui/react";
 import PlatformIconList from "./PlatformIconList";
 import CriticScore from "./CriticScore";
@@ -7,13 +6,14 @@ import { useNavigate } from "react-router-dom";
 import Emoji from "./Emoji";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart, CartItem } from "@/store/Slices/cartSlice";
-import { FullGame, Games, GameTrailer } from "@/types/Game";
+import { FullGame, Games, GameTrailer, ScreenShots } from "@/types/Game";
 import { useColorMode } from "../ui/color-mode";
 import { RootState } from "@/store/store";
 
 import useGet from "@/hooks/useGet";
 import { useState } from "react";
 import GameVideo from "../GameVideo";
+import ScreenshotCarousel from "../ScreenshotCarousel";
 
 interface BackendGameData {
   _id: string;
@@ -30,21 +30,25 @@ interface Props {
 const GameCard: React.FC<Props> = ({ game }) => {
   const { items } = useSelector((state: RootState) => state.cart);
 
-  const { colorMode } = useColorMode();  // Hämtar nuvarande färgläge
+  const { colorMode } = useColorMode(); // Hämtar nuvarande färgläge
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-
-  const [isHovered , setIsHovered] = useState(false); // Håller koll på om kortet är överfört med musen
+  const [isHovered, setIsHovered] = useState(false); // Håller koll på om kortet är överfört med musen
   const API_URL = import.meta.env.VITE_API_URL;
   const API_KEY = import.meta.env.VITE_API_KEY;
   const { data: gamePreview } = useGet<GameTrailer>(
     `${API_URL}/games/${game.rawgId}/movies?key=${API_KEY}`,
     isHovered // Om musen är över kortet, hämta trailern
   );
+  const { data: gameScreenShot } = useGet<ScreenShots>(
+    `${API_URL}/games/${game.rawgId}/screenshots?key=${API_KEY}`,
+    isHovered // Om musen är över kortet, hämta trailern
+  );
 
   const handleSubmit = (id: number) => {
     navigate(`/game/details/${id}`); // Navigera till speldetaljsidan
+    console.log("id: ", id);
   };
 
   // Hanterar logiken för att lägga till ett spel i varukorgen
@@ -72,7 +76,6 @@ const GameCard: React.FC<Props> = ({ game }) => {
     );
     alert(`${rawgGame.name} added to cart`);
   };
-  
 
   return (
     <Card.Root
@@ -85,17 +88,29 @@ const GameCard: React.FC<Props> = ({ game }) => {
       <Box
         onMouseEnter={() => {
           setIsHovered(true);
-          
         }}
         onMouseLeave={() => {
           setIsHovered(false);
-          
         }}
         height="200px"
         position="relative"
       >
-        {isHovered && gamePreview?.results?.length ? (
-          <GameVideo trailer={gamePreview.results[0]} />
+        {isHovered ? (
+          gamePreview?.results?.length ? (
+            <GameVideo trailer={gamePreview.results[0]} />
+          ) : gameScreenShot?.results?.length ? (
+            <ScreenshotCarousel
+              images={gameScreenShot.results.map((s) => s.image)}
+            />
+          ) : (
+            <Image
+              fit="fill"
+              src={croppedImageUrl(game.background_image) || ""}
+              height="200px"
+              alt={game.name}
+              width="100%"
+            />
+          )
         ) : (
           <Image
             fit="fill"
@@ -131,7 +146,7 @@ const GameCard: React.FC<Props> = ({ game }) => {
               Buy:
             </Text>
             <Text fontWeight="bold" color="green.500">
-            {game.price} SEK
+              {game.price} SEK
             </Text>
           </Flex>
 
@@ -143,7 +158,7 @@ const GameCard: React.FC<Props> = ({ game }) => {
               Rent (30 days):
             </Text>
             <Text fontWeight="bold" color="blue.500">
-           {game.rentalPrice} SEK
+              {game.rentalPrice} SEK
             </Text>
           </Flex>
         </Flex>

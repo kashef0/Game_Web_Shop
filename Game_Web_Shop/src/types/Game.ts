@@ -95,3 +95,11 @@ export interface BackendGameData {
 
 export type FullGame = Games & BackendGameData;
 
+export interface ScreenShots {
+  count: number;
+  next: string;
+  previous: string;
+  results: [{
+    image: string;
+  }]
+}
