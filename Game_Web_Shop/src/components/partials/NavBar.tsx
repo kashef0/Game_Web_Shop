@@ -78,7 +78,7 @@ const NavBar = () => {
               </Link>
               <Link to="/about">
                 <Box
-                whiteSpace='nowrap'
+                  whiteSpace='nowrap'
                   transition="color 0.3s ease"
                   fontFamily="fantasy"
                   as="h1"
@@ -126,7 +126,7 @@ const NavBar = () => {
                   py={2}
                   fontSize="lg"
                   _hover={{
-                    color: colorMode ? "#c62143" : "#9a1838",
+                    color: colorMode === "light" ? "#c62143" : "#9a1838",
                   }}
                 >
                   Home
@@ -139,7 +139,7 @@ const NavBar = () => {
                   py={2}
                   fontSize="lg"
                   _hover={{
-                    color: colorMode ? "#c62143" : "#9a1838",
+                    color: colorMode === "light" ? "#c62143" : "#9a1838",
                   }}
                 >
                   About us
@@ -153,6 +153,11 @@ const NavBar = () => {
               variant="ghost"
               onClick={() => setOpen(!open)}
               size="lg"
+              bg={colorMode === "light" ? "#cfdae3" : "#97a4b4"}
+              _hover={{
+                bg: colorMode === "light" ? "#b5bfcc" : "#7b899d",
+                
+              }}
             >
               {!open ? <IoIosArrowDown /> : <IoIosArrowUp />}
             </IconButton>
