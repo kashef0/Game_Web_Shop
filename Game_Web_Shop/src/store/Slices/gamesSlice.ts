@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { FullGame, Games, GameTrailer } from '../../types/Game';
 
 interface GamesState {
-  games: Games[];
+  games: FullGame[];
   gamePreview: GameTrailer[];
   previewGameId: number | null;
   onSearchText: string | null;
@@ -13,7 +13,7 @@ interface GamesState {
 }
 
 const initialState: GamesState = {
-  games: [] as FullGame[],
+  games: [],
   gamePreview: [],
   previewGameId: null,
   onSearchText: null,
@@ -31,14 +31,14 @@ const gamesSlice = createSlice({
     gamesLoading: (state, action) => {
       state.isLoading = action.payload;
     },
-    gamesReceived: (state, action: PayloadAction<Games[]>) => {
+    gamesReceived: (state, action: PayloadAction<FullGame[]>) => {
       state.games = action.payload;
       state.status = 'succeeded';
     },
-    gameAdded: (state, action: PayloadAction<Games>) => {
+    gameAdded: (state, action: PayloadAction<FullGame>) => {
       state.games.push(action.payload);
     },
-    gameUpdated: (state, action: PayloadAction<Games>) => {
+    gameUpdated: (state, action: PayloadAction<FullGame>) => {
       const index = state.games.findIndex(g => g.id === action.payload.id);
       if (index !== -1) {
         state.games[index] = action.payload;
@@ -51,9 +51,6 @@ const gamesSlice = createSlice({
     gamePreviewId: (state, action: PayloadAction<number>) => {
       state.previewGameId = action.payload
     },
-    // gameDeleted: (state, action: PayloadAction<number>) => {
-    //   state.games = state.games.filter(g => g.id !== action.payload);
-    // },
     onSearch: (state, action: PayloadAction<string>) => {
       state.onSearchText = action.payload;
     },
@@ -72,7 +69,6 @@ export const {
   onSearch,
   gamePreview,
   gamePreviewId,
-  // gameDeleted, 
   gamesError 
 } = gamesSlice.actions;
 
