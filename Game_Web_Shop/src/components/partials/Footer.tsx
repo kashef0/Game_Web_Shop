@@ -28,7 +28,7 @@ const Footer = () => {
           </Link>
         </Stack>
         <Text fontSize="sm">
-          © {new Date().getFullYear()} GameHub. All rights reserved.
+          © {new Date().getFullYear()} GameZone. All rights reserved.
         </Text>
 
 

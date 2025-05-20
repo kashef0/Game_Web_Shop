@@ -3,7 +3,6 @@ import Layout from "./components/partials/Layout";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ProtectedRoute from "./context/protected";
-import ProfileUpdateForm from "./unUsed/ProfileUpdateForm";
 import GameDetail from "./components/partials/GameDetail";
 import ProfilePage from "./pages/ProfilePage";
 import Cart from "./components/partials/Cart";
@@ -17,6 +16,7 @@ import About from "./pages/About";
 import Terms from "./pages/Terms";
 import Contact from "./pages/Contact";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
+
 
 
 
@@ -76,14 +76,6 @@ const router = createBrowserRouter([
       {
         path: "/receipt/:id",
         element: <Receipt />,
-      },
-      {
-        path: "/admin-dashboard",
-        element: (
-          <ProtectedRoute allowedRoles={["user"]}>
-            <ProfileUpdateForm />
-          </ProtectedRoute>
-        ),
       },
       {
         path: "/Order_History",

@@ -1,7 +1,7 @@
 
-
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { User } from '../../types/auth';
+
 
 // Definiera initialt autentisering
 interface AuthState {
@@ -33,6 +33,9 @@ const authSlice = createSlice({
       state.loading = false; // Ladda inte längre
       state.error = null; // Rensa eventuellt fel
     },
+    setToken: (state, action: PayloadAction<string>) => {
+      state.token = action.payload
+    },
     updateUserProfile: (state, action: PayloadAction<Partial<User>>) => {
       if (state.user) {
         state.user = { ...state.user, ...action.payload };
@@ -58,6 +61,7 @@ export const {
   loginSuccess,
   registerSuccess,
   updateUserProfile,
+  setToken,
   logout,
 } = authSlice.actions;
 

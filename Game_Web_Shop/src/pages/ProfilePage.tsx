@@ -4,17 +4,22 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Box, Input, Button, Text, Image, Stack, Heading, Spinner, Field } from '@chakra-ui/react';
 import usePut from '@/hooks/usePut';
 import { RootState } from '@/store/store';
-import { updateUserProfile } from '@/store/Slices/authSlice';
+import { loginSuccess, updateUserProfile } from '@/store/Slices/authSlice';
+import useGet from '@/hooks/useGet';
+import { User } from '@/types/auth';
 
 const ProfilePage = () => {
   const API_URL = import.meta.env.VITE_DATABASE_API_URL;
   const dispatch = useDispatch();
-  const { user } = useSelector((state: RootState) => state.auth);
+  const { user, token } = useSelector((state: RootState) => state.auth);
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [file, setFile] = useState<File | null>(null);
   const { loading, error, updateData } = usePut(`${API_URL}/api/users/update_profile`);
-
+  const {data, fetchData} = useGet<User>(`${API_URL}/api/users/profile`, loading, '', token || '');
+  const [success, setSuccess] = useState<string | null>(null);
+  console.log("data: ", data)
+  console.log("user: ", user)
   // Sätta initialt namn när användarens data finns
   useEffect(() => {
     if (user) {
@@ -22,25 +27,36 @@ const ProfilePage = () => {
     }
   }, [user]);
 
+  useEffect(() => {
+        fetchData()
+  }, [loading])
+
   // Uppdaterar vald fil i state när användaren väljer en ny bild
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    
     const selectedFile = e.target.files?.[0];
     if (selectedFile) setFile(selectedFile);
   };
   // Skickar uppdaterad användarinfo till servern
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    setSuccess(" ");
   
     const formData = new FormData();
     if (name !== user?.name) formData.append('name', name); // Endast om nytt namn
     if (password) formData.append('password', password); // Om nytt lösenord
     if (file) formData.append('profilePic', file); // Om ny profilbild
-  
     try {
       const updatedUser = await updateData(formData); // Skickar PUT förfrågan
-      const token = localStorage.getItem('token');
       if (updatedUser && token) {
-        dispatch(updateUserProfile(updatedUser));
+        setSuccess("Profile updated successfully!");
+        dispatch(updateUserProfile(updatedUser.user));
+        dispatch(loginSuccess({
+          ...updatedUser.data,
+          token,
+        }));
+
       }
     } catch (err) {
       console.error('Error updating profile:', err);
@@ -102,6 +118,8 @@ const ProfilePage = () => {
             Update Profile
           </Button>
         </Stack>
+        
+        {success && <Text color='green.400' paddingY={2}>{success}</Text>}
 
         {/* Error Message */}
         {error && <Text color="red.500" mt={4}>{error}</Text>}

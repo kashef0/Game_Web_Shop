@@ -5,6 +5,7 @@ import ordersReducer from './Slices/ordersSlice';
 import genreReducer from './Slices/genreSlice';
 import cartReducer from '../store/Slices/cartSlice'
 
+
 export const store = configureStore({
   reducer: {
     auth: authReducer,  // Hanterar användarinloggning och autentisering
@@ -12,7 +13,6 @@ export const store = configureStore({
     orders: ordersReducer, // Hanterar orderhistorik och detaljer
     genre: genreReducer, // Hanterar genres
     cart: cartReducer,   // Hanterar varukorgen
-    
   }
 });
 // Typdefinitioner för att använda i hela appen

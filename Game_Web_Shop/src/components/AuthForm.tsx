@@ -1,5 +1,5 @@
 import usePost from "@/hooks/usePost";
-import { loginSuccess, registerSuccess } from "@/store/Slices/authSlice";
+import { loginSuccess, registerSuccess, setToken } from "@/store/Slices/authSlice";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -60,7 +60,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ isLogin }) => {
       return;
     }
 
-    if (password !== confirmPassword) {
+    if (!isLogin && password !== confirmPassword) {
       setConfirmPasswordError("Your confirmed password doesn't match");
       return;
     }
@@ -110,6 +110,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ isLogin }) => {
         localStorage.setItem("username", user.name);
         localStorage.setItem("email", user.email);
         dispatch(loginSuccess(user));
+        dispatch(setToken(token));
         navigate("/");
       }
 
