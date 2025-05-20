@@ -17,7 +17,6 @@ const GenreList = () => {
   const dispatch = useDispatch();
   const { selectedGenreId } = useSelector((state: RootState) => state.genre);
 
-
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -47,6 +46,11 @@ const GenreList = () => {
 
   // Hanterar klick på en genre
   const handleGenreClick = (id: number) => {
+    console.log("id: ", id)
+    if (id === selectedGenreId) {
+      dispatch(setSelectedGenre(0));
+      return;
+    }
     dispatch(setSelectedGenre(id));
     dispatch(gamesReceived([])); // Rensa spel listan
     const genreName = genres.find((g) => g.id === id); // Hämta namn för valt genre

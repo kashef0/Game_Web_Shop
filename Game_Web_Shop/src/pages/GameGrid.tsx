@@ -50,7 +50,7 @@ const GameGrid = () => {
     false
   );
 
-  const [rawgData, setRawgData] = useState<Games[]>([]);
+  const [rawgData, setRawgData] = useState<FullGame[]>([]);
   const [rawgLoading, setRawgLoading] = useState(false);
   const [rawgError, setRawgError] = useState<string | null>(null);
 
@@ -100,8 +100,6 @@ const GameGrid = () => {
   useEffect(() => {
     if (rawgData.length) {
       let filtered = [...rawgData];
-      // dispatch(gamesReceived(filtered));
-      // Filter by genre
       if (selectedGenreId) {
         filtered = filtered.filter((game) =>
           game.genres?.some(

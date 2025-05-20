@@ -160,7 +160,7 @@ const GameCard: React.FC<Props> = ({ game }) => {
         <Button
           variant="solid"
           onClick={
-            () => handleAddToCart(game, game, false) // For Buy button
+            () => handleAddToCart(game, game, false) 
           }
         >
           Buy now
@@ -170,7 +170,7 @@ const GameCard: React.FC<Props> = ({ game }) => {
             variant="ghost"
             _hover={{ bg: "gray.700" }}
             onClick={
-              () => handleAddToCart(game, game, true, 30) // For Rent button
+              () => handleAddToCart(game, game, true, 30)
             }
           >
             Rent 30 Days
