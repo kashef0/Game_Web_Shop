@@ -5,8 +5,7 @@ import { Box, Input, Button, Text, Image, Stack, Heading, Spinner, Field } from 
 import usePut from '@/hooks/usePut';
 import { RootState } from '@/store/store';
 import { loginSuccess, updateUserProfile } from '@/store/Slices/authSlice';
-import useGet from '@/hooks/useGet';
-import { User } from '@/types/auth';
+
 
 const ProfilePage = () => {
   const API_URL = import.meta.env.VITE_DATABASE_API_URL;
@@ -16,9 +15,7 @@ const ProfilePage = () => {
   const [password, setPassword] = useState('');
   const [file, setFile] = useState<File | null>(null);
   const { loading, error, updateData } = usePut(`${API_URL}/api/users/update_profile`);
-  const {data, fetchData} = useGet<User>(`${API_URL}/api/users/profile`, loading, '', token || '');
   const [success, setSuccess] = useState<string | null>(null);
-  console.log("data: ", data)
   console.log("user: ", user)
   // Sätta initialt namn när användarens data finns
   useEffect(() => {
@@ -27,9 +24,7 @@ const ProfilePage = () => {
     }
   }, [user]);
 
-  useEffect(() => {
-        fetchData()
-  }, [loading])
+
 
   // Uppdaterar vald fil i state när användaren väljer en ny bild
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {

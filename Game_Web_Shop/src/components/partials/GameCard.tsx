@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import Emoji from "./Emoji";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart, CartItem } from "@/store/Slices/cartSlice";
-import { FullGame, Games, GameTrailer, ScreenShots } from "@/types/Game";
+import { BackendGameData, FullGame, Games, GameTrailer, ScreenShots } from "@/types/Game";
 import { useColorMode } from "../ui/color-mode";
 import { RootState } from "@/store/store";
 
@@ -15,13 +15,6 @@ import { useState } from "react";
 import GameVideo from "../GameVideo";
 import ScreenshotCarousel from "../ScreenshotCarousel";
 
-interface BackendGameData {
-  _id: string;
-  rawgId: number;
-  price: number;
-  rentalPrice?: number;
-  availableForRent: boolean;
-}
 
 interface Props {
   game: FullGame;
