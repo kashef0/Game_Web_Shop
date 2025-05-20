@@ -46,9 +46,9 @@ const GenreList = () => {
 
   // Hanterar klick på en genre
   const handleGenreClick = (id: number) => {
-    console.log("id: ", id)
     if (id === selectedGenreId) {
       dispatch(setSelectedGenre(0));
+      dispatch(setGenreName(""));
       return;
     }
     dispatch(setSelectedGenre(id));

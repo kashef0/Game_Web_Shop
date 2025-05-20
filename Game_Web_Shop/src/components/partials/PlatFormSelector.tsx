@@ -21,7 +21,7 @@ const PlatFormSelector = () => {
 
   const [retryCount, setRetryCount] = useState(0);
   const [dots, setDots] = useState(".");
-  const [selectedPlatformName, setSelectedPlatformName] = useState("Platforms");
+  const [selectedPlatformName, setSelectedPlatformName] = useState("-- All Platforms --");
   const [loadingPlatforms, setLoadingPlatforms] = useState(true);
 
   const maxRetries = 3;
@@ -47,17 +47,14 @@ const PlatFormSelector = () => {
   // Funktion som hanterar användarens klick på en plattform i menyn
   const handlePlatformClick = (id: number) => {
     dispatch(selectedPlatformId(id));
+  
     const selected = platform.find((p) => p.id === id);
-    if (selected) {
-      // Uppdatera det lokala tillståndet selectedPlatformName med plattformens namn
-      setSelectedPlatformName(selected.name);
-
-       // Uppdatera Redux store med det valda plattformens namn
-      dispatch(setPlatformName(selected.name));
-    } else {
-      setSelectedPlatformName("Platforms");
-    }
+    const name = selected?.name || "-- All Platforms --";
+  
+    setSelectedPlatformName(name);
+    dispatch(setPlatformName(id === 0 ? "" : name));
   };
+  
 
   return (
     <Menu.Root>
@@ -86,7 +83,7 @@ const PlatFormSelector = () => {
                   p=".75rem"
                   cursor="pointer"
                 >
-                  {result.name}
+                  {result.id > 0 ? result.name : "-- All Platforms --"}
                 </Menu.Item>
               ))
             ) : (

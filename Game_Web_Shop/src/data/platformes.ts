@@ -1,4 +1,10 @@
 export default [
+  {
+    "id": 0,
+    "name": "-- All platforms --",
+    "slug": "",
+    
+  },
     {
       "id": 1,
       "name": "PC",
