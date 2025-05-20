@@ -8,6 +8,14 @@
   "moduleResolution": "node",
   "esModuleInterop": true,
   "resolveJsonModule": true,
-  "isolatedModules": true
-}
+  "isolatedModules": true,
+  "target": "ESNext",
+    "module": "ESNext",
+    
+    "skipLibCheck": true,
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+},
+
 }
