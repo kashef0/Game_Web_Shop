@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
@@ -11,11 +10,10 @@ import { resetFilters } from "@/store/Slices/genreSlice";
 import { RootState } from "@/store/store";
 import { gamesError, gamesReceived } from "@/store/Slices/gamesSlice";
 import useGet from "@/hooks/useGet";
+import Pagination from "@/components/Pagination";
 
 // skeletons för laddning
 const Skeletons = [1, 2, 3, 4, 5, 6];
-
-
 
 const GameGrid = () => {
   const dispatch = useDispatch();
@@ -35,6 +33,8 @@ const GameGrid = () => {
     (state: RootState) => state.genre.selectedPlatformId
   );
 
+  const GAMES_PER_PAGE = 8;
+  const [currentPage, setCurrentPage] = useState(1);
 
   const API_URL = import.meta.env.VITE_API_URL;
   const API_KEY = import.meta.env.VITE_API_KEY;
@@ -45,10 +45,7 @@ const GameGrid = () => {
     data: backendGames,
     error: backendError,
     loading: backendLoading,
-  } = useGet<BackendGameData[]>(
-    `${DATABASE_URL}/api/games`,
-    false
-  );
+  } = useGet<BackendGameData[]>(`${DATABASE_URL}/api/games`, false);
 
   const [rawgData, setRawgData] = useState<FullGame[]>([]);
   const [rawgLoading, setRawgLoading] = useState(false);
@@ -117,7 +114,7 @@ const GameGrid = () => {
         );
       }
 
-       // Sökfunktion
+      // Sökfunktion
       if (onSearchText) {
         const search = onSearchText.toLowerCase();
         filtered = filtered.filter((g) =>
@@ -165,11 +162,14 @@ const GameGrid = () => {
     selectedRelevance,
   ]);
 
-
-  
-
   const renderError = error && !games.length;
   const isLoading = backendLoading || rawgLoading;
+
+  // Skapa en paginerad lista med spel för aktuell sida
+  const paginatedGames = games.slice(
+    (currentPage - 1) * GAMES_PER_PAGE,
+    currentPage * GAMES_PER_PAGE
+  );
 
   return (
     <>
@@ -177,8 +177,15 @@ const GameGrid = () => {
       <SimpleGrid columns={{ sm: 1, md: 2, lg: 3, xl: 4 }} p="10px" gap={4}>
         {isLoading && Skeletons.map((s) => <GameCardSkeleton key={s} />)}
         {status === "succeeded" &&
-          games.map((g) => <GameCard key={g.id} game={g} />)}
+          paginatedGames.map((g) => <GameCard key={g.id} game={g} />)}
       </SimpleGrid>
+      {!isLoading && games.length > GAMES_PER_PAGE && (
+        <Pagination
+          currentPage={currentPage}
+          totalPages={Math.ceil(games.length / GAMES_PER_PAGE)}
+          onChange={(page) => setCurrentPage(page)}
+        />
+      )}
     </>
   );
 };
