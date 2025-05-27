@@ -21,7 +21,7 @@ const PlatFormSelector = () => {
 
   const [retryCount, setRetryCount] = useState(0);
   const [dots, setDots] = useState(".");
-  const [selectedPlatformName, setSelectedPlatformName] = useState("-- All Platforms --");
+  const [selectedPlatformName, setSelectedPlatformName] = useState("All Platforms");
   const [loadingPlatforms, setLoadingPlatforms] = useState(true);
 
   const maxRetries = 3;
@@ -49,7 +49,7 @@ const PlatFormSelector = () => {
     dispatch(selectedPlatformId(id));
   
     const selected = platform.find((p) => p.id === id);
-    const name = selected?.name || "-- All Platforms --";
+    const name = selected?.name || "All Platforms";
   
     setSelectedPlatformName(name);
     dispatch(setPlatformName(id === 0 ? "" : name));
@@ -83,7 +83,7 @@ const PlatFormSelector = () => {
                   p=".75rem"
                   cursor="pointer"
                 >
-                  {result.id > 0 ? result.name : "-- All Platforms --"}
+                  {result.id > 0 ? result.name : "All Platforms"}
                 </Menu.Item>
               ))
             ) : (

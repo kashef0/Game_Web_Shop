@@ -1,7 +1,7 @@
 export default [
   {
     "id": 0,
-    "name": "-- All platforms --",
+    "name": "All platforms",
     "slug": "",
     
   },

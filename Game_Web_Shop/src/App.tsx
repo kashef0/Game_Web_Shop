@@ -21,7 +21,6 @@ function App() {
           lg: "200px 1fr",
         }}
       >
-
         <GridItem
           marginTop="2rem"
           area="aside"
