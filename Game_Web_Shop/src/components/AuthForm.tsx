@@ -16,6 +16,7 @@ import {
 import { useColorModeValue } from "./ui/color-mode";
 import { AuthLogin } from "@/types/auth";
 import { validateEmail, validatePassword } from "@/utils/validators";
+import { setLoading } from "@/store/Slices/messageSlice";
 
 interface AuthFormProps {
   isLogin: boolean; // kolla om formuläret är för inloggning eller registrering
@@ -39,6 +40,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ isLogin }) => {
     postData,
     error: postError,
     loading,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } = usePost<any>(
     isLogin ? `${BASE_URL}/api/auth/login` : `${BASE_URL}/api/auth/register`
   );
@@ -86,7 +88,9 @@ const AuthForm: React.FC<AuthFormProps> = ({ isLogin }) => {
         response = await postData({ name, email, password }); // Post registrating data
       }
       if (!response) {
-        setError(postError || "Could not retrieve data.");
+        if (postError) 
+          setError(postError);
+        setError(postError || "invalid creadinals")
         return;
       }
       if (response && isLogin) {
@@ -110,6 +114,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ isLogin }) => {
         localStorage.setItem("username", user.name);
         localStorage.setItem("email", user.email);
         dispatch(loginSuccess(user));
+        dispatch(setLoading(true));
         dispatch(setToken(token));
         navigate("/");
       }
@@ -123,6 +128,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ isLogin }) => {
           navigate("/login");
         }, 2000);
       }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setError(err.message);
       alert(error);

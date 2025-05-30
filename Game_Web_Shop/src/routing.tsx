@@ -16,6 +16,7 @@ import About from "./pages/About";
 import Terms from "./pages/Terms";
 import Contact from "./pages/Contact";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
+import UserInbox from "./pages/UserInbox";
 
 
 
@@ -58,6 +59,14 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute allowedRoles={["user"]}>
             <ProfilePage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/UserInbox",
+        element: (
+          <ProtectedRoute allowedRoles={["user"]}>
+            <UserInbox />
           </ProtectedRoute>
         ),
       },

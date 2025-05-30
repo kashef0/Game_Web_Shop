@@ -35,7 +35,6 @@ const GameGrid = () => {
 
   const GAMES_PER_PAGE = 8;
   const [currentPage, setCurrentPage] = useState(1);
-
   const API_URL = import.meta.env.VITE_API_URL;
   const API_KEY = import.meta.env.VITE_API_KEY;
   const DATABASE_URL = import.meta.env.VITE_DATABASE_API_URL;

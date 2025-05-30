@@ -4,6 +4,7 @@ import gamesReducer from './Slices/gamesSlice';
 import ordersReducer from './Slices/ordersSlice';
 import genreReducer from './Slices/genreSlice';
 import cartReducer from '../store/Slices/cartSlice'
+import messageReducer from './Slices/messageSlice'
 
 
 export const store = configureStore({
@@ -13,6 +14,7 @@ export const store = configureStore({
     orders: ordersReducer, // Hanterar orderhistorik och detaljer
     genre: genreReducer, // Hanterar genres
     cart: cartReducer,   // Hanterar varukorgen
+    message: messageReducer,
   }
 });
 // Typdefinitioner för att använda i hela appen

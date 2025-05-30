@@ -1,11 +1,12 @@
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { logout } from "@/store/Slices/authSlice";
 import { IoSettingsOutline } from "react-icons/io5";
 import { GrHistory } from "react-icons/gr";
 import { FaSignOutAlt } from "react-icons/fa";
-import { Menu, Portal, Icon, Image } from "@chakra-ui/react";
-
+import { Menu, Portal, Icon, Image, Badge } from "@chakra-ui/react";
+import { RootState } from "@/store/store";
+import { HiOutlineInboxArrowDown } from "react-icons/hi2";
 
 type UserMenuProps = {
   profilePic: string;
@@ -14,13 +15,16 @@ type UserMenuProps = {
 const UserMenu = ({ profilePic }: UserMenuProps) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
+  const { messages } = useSelector((state: RootState) => state.message);
 
   const handleLogout = () => {
     dispatch(logout());
     navigate("/");
   };
 
+  const messageCount = messages.filter(
+    (m) => !m.adminReply || m.adminReply.trim().length === 0
+  ).length;
   return (
     <Menu.Root>
       <Menu.Trigger asChild>
@@ -46,6 +50,33 @@ const UserMenu = ({ profilePic }: UserMenuProps) => {
               >
                 <IoSettingsOutline />
                 Setting
+              </Menu.Item>
+            </Link>
+
+            <Link
+              to="/UserInbox"
+              className="dropdown-item d-flex justify-content-between align-items-center"
+            >
+              <Menu.Item
+                value="Inkorg"
+                display="flex"
+                alignItems="center"
+                cursor="pointer"
+              >
+                <HiOutlineInboxArrowDown />
+                Inkorg
+                {messageCount > 0 && (
+                  <Badge
+                    colorPalette="red"
+                    borderRadius="full"
+                    variant='solid'
+                    px={2}
+                    fontSize="0.8em"
+                    ml={2}
+                  >
+                    {messageCount}
+                  </Badge>
+                )}
               </Menu.Item>
             </Link>
 
