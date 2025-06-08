@@ -18,7 +18,6 @@ const SelectPaymentMethod = ({ collection, value, onChange }: Props) => {
       value={value}
       onValueChange={(details) => onChange(details.value)}
       size="sm"
-      width="320px"
     >
       <Select.HiddenSelect />
       <Select.Label>Select Payment Method</Select.Label>
