@@ -1,4 +1,5 @@
 import { Button, Card, HStack, Text, Image, Flex, Box } from "@chakra-ui/react";
+import { toaster } from "@/components/ui/toaster";
 import PlatformIconList from "./PlatformIconList";
 import CriticScore from "./CriticScore";
 import croppedImageUrl from "../../utils/croppedImageUrl";
@@ -6,7 +7,13 @@ import { useNavigate } from "react-router-dom";
 import Emoji from "./Emoji";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart, CartItem } from "@/store/Slices/cartSlice";
-import { BackendGameData, FullGame, Games, GameTrailer, ScreenShots } from "@/types/Game";
+import {
+  BackendGameData,
+  FullGame,
+  Games,
+  GameTrailer,
+  ScreenShots,
+} from "@/types/Game";
 import { useColorMode } from "../ui/color-mode";
 import { RootState } from "@/store/store";
 
@@ -14,7 +21,6 @@ import useGet from "@/hooks/useGet";
 import { useState } from "react";
 import GameVideo from "../GameVideo";
 import ScreenshotCarousel from "../ScreenshotCarousel";
-
 
 interface Props {
   game: FullGame;
@@ -55,10 +61,14 @@ const GameCard: React.FC<Props> = ({ game }) => {
       (item: CartItem) => item.game._id === backendGame._id && item.isRental
     );
     if (isRental && alreadyRented) {
-      alert("You already rented this game. You can only rent it once.");
+      toaster.create({
+        title: "Already Rented",
+        description: "You can only rent this game once.",
+        type: "warning",
+      });
       return;
     }
-    // dispatcha action för att lägga till spelet i varukorgen
+
     dispatch(
       addToCart({
         game: { ...backendGame, ...rawgGame },
@@ -67,7 +77,12 @@ const GameCard: React.FC<Props> = ({ game }) => {
         rentalDuration: isRental ? rentalDuration : 0,
       })
     );
-    alert(`${rawgGame.name} added to cart`);
+
+    toaster.create({
+      title: "Added to Cart",
+      description: `${rawgGame.name} has been added to your cart.`,
+      type: "success",
+    });
   };
 
   return (
@@ -159,9 +174,7 @@ const GameCard: React.FC<Props> = ({ game }) => {
       <Card.Footer gap="2">
         <Button
           variant="solid"
-          onClick={
-            () => handleAddToCart(game, game, false) 
-          }
+          onClick={() => handleAddToCart(game, game, false)}
         >
           Buy now
         </Button>
@@ -169,9 +182,7 @@ const GameCard: React.FC<Props> = ({ game }) => {
           <Button
             variant="ghost"
             _hover={{ bg: "gray.700" }}
-            onClick={
-              () => handleAddToCart(game, game, true, 30)
-            }
+            onClick={() => handleAddToCart(game, game, true, 30)}
           >
             Rent 30 Days
           </Button>

@@ -32,8 +32,12 @@ const cartSlice = createSlice({
         state.items.push(action.payload);
       }
     },
-    removeFromCart(state, action: PayloadAction<string>) {
-      state.items = state.items.filter((item) => item.game._id !== action.payload);
+    removeFromCart(state, action: PayloadAction<{ id: string; isRental: boolean }>) {
+       const { id, isRental } = action.payload;
+  state.items = state.items.filter(
+    (item) =>
+      !(item.game._id === id && item.isRental === isRental)
+  );
     },
     clearCart(state) {
       state.items = [];
