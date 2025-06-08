@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
-import { SimpleGrid, Text } from "@chakra-ui/react";
+import { Box, SimpleGrid, Text } from "@chakra-ui/react";
 import GameCard from "../components/partials/GameCard";
 import GameCardSkeleton from "../components/partials/GameCardSkeleton";
 
@@ -58,7 +58,8 @@ const GameGrid = () => {
   // Hämtar data från RAWG för varje spel från backend
   useEffect(() => {
     const fetchRawgGames = async () => {
-      if (!backendGames) return;
+      if (!backendGames?.length || rawgData.length >= backendGames.length) return;
+
 
       setRawgLoading(true);
       setRawgError(null);
@@ -143,7 +144,6 @@ const GameGrid = () => {
           return 0;
         });
       }
-
       dispatch(gamesReceived(filtered));
     }
 
@@ -172,7 +172,14 @@ const GameGrid = () => {
 
   return (
     <>
-      {renderError && <Text>Error: {error}</Text>}
+      {renderError && (
+        <Box p={4} bg="red.100" borderRadius="md">
+          <Text color="red.800" fontWeight="bold">
+            Failed to load games: {error}
+          </Text>
+        </Box>
+      )}
+
       <SimpleGrid columns={{ sm: 1, md: 2, lg: 3, xl: 4 }} p="10px" gap={4}>
         {isLoading && Skeletons.map((s) => <GameCardSkeleton key={s} />)}
         {status === "succeeded" &&

@@ -32,7 +32,13 @@ function App() {
 
         <GridItem area="main" marginTop="2rem">
           <GameHeading />
-          <HStack gap={5} paddingLeft={2} marginBottom={4} display='flex' flexWrap='wrap'>
+          <HStack
+            gap={5}
+            paddingLeft={2}
+            marginBottom={4}
+            display="flex"
+            flexWrap="wrap"
+          >
             <PlatFormSelector />
             {isMobile && <GenreMobileList />}
             <SortSelector />
