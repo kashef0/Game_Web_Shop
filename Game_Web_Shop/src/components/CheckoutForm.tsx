@@ -1,6 +1,6 @@
-
 import { RootState } from "@/store/store";
 import { useState } from "react";
+import { toaster } from "@/components/ui/toaster";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {
@@ -18,38 +18,46 @@ import SelectPaymentMethod from "./SelectPaymentMethod";
 import { clearCart } from "@/store/Slices/cartSlice";
 import usePost from "@/hooks/usePost";
 import { orderAdded } from "@/store/Slices/ordersSlice";
-import { CreateOrderRequest} from "@/types/order";
+import { CreateOrderRequest } from "@/types/order";
 
 const CheckoutForm: React.FC = () => {
-  const dispatch = useDispatch(); 
+  const dispatch = useDispatch();
   const { items } = useSelector((state: RootState) => state.cart); // Hämtar produkter från kundvagnen
   const [name, setName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [address, setAddress] = useState<string>("");
   const [telefon, setTelefon] = useState<string>("");
   const [paymentMethod, setPaymentMethod] = useState<string[]>(["Credit Card"]);
-  
+
   const navigate = useNavigate();
 
   const DATABASE_API_URL = import.meta.env.VITE_DATABASE_API_URL;
   // Använder usePost hooken för att skapa en order
-  const { data, error, loading, postData } = usePost<any>(`${DATABASE_API_URL}/api/orders`);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data, error, loading, postData } = usePost<any>(
+    `${DATABASE_API_URL}/api/orders`
+  );
 
   // Funktion som körs när användaren bekräftar beställningen
   const handleSubmit = async () => {
     if (!localStorage.getItem("token")) {
-      alert("you should login....");
+      toaster.create({
+        title: "Authentication Required",
+        description: "You must be logged in to place an order.",
+        type: "warning",
+      });
       return;
     }
-    
+
     // mappa produkter till rätt format
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const mappedItems = items.map((item: any) => ({
       game: item.game.id,
       quantity: item.quantity,
       isRental: item.isRental,
       rentalDuration: item.isRental ? item.rentalDuration : 0,
     }));
-    
+
     // Bygg ordern
     const orderRequest: CreateOrderRequest = {
       items: mappedItems,
@@ -58,24 +66,34 @@ const CheckoutForm: React.FC = () => {
       email,
       address,
       telefon,
-      
     };
-    
+
     // Skicka beställning till servern
     try {
       const result = await postData(orderRequest);
       if (result) {
-        dispatch(orderAdded(result));  // Lägg till order i Redux
-        alert(`Order created!\nOrder ID: ${result._id}\nTotal: ${result.totalPrice} SEK`);
+        dispatch(orderAdded(result)); // Lägg till order i Redux
+        toaster.create({
+          title: "Order Created",
+          description: `Order ID: ${result._id} — Total: ${result.totalPrice} SEK`,
+          type: "success",
+        });
+
         dispatch(clearCart()); // Töm kundvagn
         localStorage.removeItem("cart");
-        navigate(`/receipt/${result._id}`); 
+        setTimeout(() => {
+          navigate(`/receipt/${result._id}`);
+        }, 1000);
       }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      alert("Error: " + err.message);
+      toaster.create({
+        title: "Order Failed",
+        description: err.message || "Something went wrong.",
+        type: "error",
+      });
     }
   };
-  
 
   const frameworks = createListCollection({
     items: [
@@ -167,7 +185,7 @@ const CheckoutForm: React.FC = () => {
           {data && data.length !== 0 && (
             <Alert.Root status="success" mt={4} rounded="md">
               <Alert.Indicator />
-              <Alert.Title>{data}</Alert.Title>
+              <Alert.Title>Order ID: {data._id}, Total: {data.totalPrice} SEK</Alert.Title>
             </Alert.Root>
           )}
         </Stack>
@@ -177,5 +195,3 @@ const CheckoutForm: React.FC = () => {
 };
 
 export default CheckoutForm;
-
-
