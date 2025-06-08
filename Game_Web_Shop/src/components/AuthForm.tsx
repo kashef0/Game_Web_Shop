@@ -1,6 +1,11 @@
 import usePost from "@/hooks/usePost";
-import { loginSuccess, registerSuccess, setToken } from "@/store/Slices/authSlice";
+import {
+  loginSuccess,
+  registerSuccess,
+  setToken,
+} from "@/store/Slices/authSlice";
 import React, { useEffect, useState } from "react";
+import { toaster } from "@/components/ui/toaster";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {
@@ -30,7 +35,6 @@ const AuthForm: React.FC<AuthFormProps> = ({ isLogin }) => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [confirmPasswordError, setConfirmPasswordError] = useState("");
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
   const navigate = useNavigate();
 
   const BASE_URL = import.meta.env.VITE_DATABASE_API_URL;
@@ -40,7 +44,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ isLogin }) => {
     postData,
     error: postError,
     loading,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } = usePost<any>(
     isLogin ? `${BASE_URL}/api/auth/login` : `${BASE_URL}/api/auth/register`
   );
@@ -54,7 +58,6 @@ const AuthForm: React.FC<AuthFormProps> = ({ isLogin }) => {
     e.preventDefault();
 
     setError("");
-    setSuccess("");
     setConfirmPasswordError("");
 
     if (!isLogin && !validateEmail(email)) {
@@ -88,9 +91,8 @@ const AuthForm: React.FC<AuthFormProps> = ({ isLogin }) => {
         response = await postData({ name, email, password }); // Post registrating data
       }
       if (!response) {
-        if (postError) 
-          setError(postError);
-        setError(postError || "invalid creadinals")
+        if (postError) setError(postError);
+        setError(postError || "invalid creadinals");
         return;
       }
       if (response && isLogin) {
@@ -117,18 +119,27 @@ const AuthForm: React.FC<AuthFormProps> = ({ isLogin }) => {
         dispatch(setLoading(true));
         dispatch(setToken(token));
         navigate("/");
+        toaster.create({
+          title: "Login successful",
+          description: `Welcome back, ${user.name}!`,
+          type: "success",
+        });
       }
 
       // Hanterar register svar
       if (!isLogin && response) {
         const { user } = response;
         dispatch(registerSuccess(user));
-        setSuccess("Account created successfully! Log in now.");
+        toaster.create({
+          title: "Account created",
+          description: "You can now log in.",
+          type: "success",
+        });
         setTimeout(() => {
           navigate("/login");
         }, 2000);
       }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setError(err.message);
       alert(error);
@@ -154,12 +165,6 @@ const AuthForm: React.FC<AuthFormProps> = ({ isLogin }) => {
         <Heading size="lg" textAlign="center" color="gray.800" mb={6}>
           {isLogin ? "Log in" : "Create account"}
         </Heading>
-
-        {success && (
-          <Text color="green.500" fontSize="sm" textAlign="center" mb={4}>
-            {success}
-          </Text>
-        )}
 
         <form onSubmit={handleSubmit}>
           <VStack gap={4}>

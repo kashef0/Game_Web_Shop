@@ -7,7 +7,7 @@ import { FaSignOutAlt } from "react-icons/fa";
 import { Menu, Portal, Icon, Image, Badge } from "@chakra-ui/react";
 import { RootState } from "@/store/store";
 import { HiOutlineInboxArrowDown } from "react-icons/hi2";
-
+import { toaster } from "@/components/ui/toaster";
 type UserMenuProps = {
   profilePic: string;
 };
@@ -19,6 +19,11 @@ const UserMenu = ({ profilePic }: UserMenuProps) => {
 
   const handleLogout = () => {
     dispatch(logout());
+    toaster.create({
+      title: "Logged out",
+      description: "You have been signed out successfully.",
+      type: "success",
+    });
     navigate("/");
   };
 
@@ -69,7 +74,7 @@ const UserMenu = ({ profilePic }: UserMenuProps) => {
                   <Badge
                     colorPalette="red"
                     borderRadius="full"
-                    variant='solid'
+                    variant="solid"
                     px={2}
                     fontSize="0.8em"
                     ml={2}
