@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 // Typ för ett objekt i varukorgen
 export interface CartItem {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   game: any;
   quantity: number;
   isRental: boolean;
